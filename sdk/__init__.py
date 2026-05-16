@@ -36,7 +36,7 @@ from .pluginsystem import (
     private_message,
 )
 
-__version__: str = "3.0.0"
+__version__: str = "3.5.0"
 
 __all__: list[str] = [
     "NapCatClient",
