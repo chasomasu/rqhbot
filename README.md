@@ -22,7 +22,16 @@
 - 🎯 **强类型事件** - 类型安全，减少错误
 - 🧩 **事件总线** - 模块解耦，扩展灵活
 
-## 🚀 快速开始
+## � 前置要求
+
+RqhBot 基于 NapCat 的 OneBot11 协议通信，使用前需要先下载并配置 NapCat。
+
+- 🔗 **NapCat 下载与安装指南**: [https://napneko.github.io/guide/napcat](https://napneko.github.io/guide/napcat)
+- 📖 **NapCat 文档站**: [https://napneko.github.io/](https://napneko.github.io/)
+
+请按照 NapCat 文档完成安装和基本配置，确保 NapCat 的 WebSocket 服务正常运行后再启动 RqhBot。
+
+## �🚀 快速开始
 
 ### 1. 安装依赖
 
