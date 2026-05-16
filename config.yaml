@@ -1,0 +1,32 @@
+# RqhBot 配置文件
+
+# NapCat 连接配置
+napcat:
+  ws_url: "ws://localhost:3002"
+  access_token: "Chasomasu"
+  bot_uin: "3831279795"                       # 机器人 QQ 号
+  root: "2654278608"                          # 根账号
+  webui_uri: "http://localhost:6098"   # WebUI 地址
+  webui_token: ""                   # WebUI 令牌
+
+# 机器人配置
+bot:
+  # 是否加载插件系统
+  load_plugins: true
+  # 插件目录路径
+  plugin_dir: "plugins"
+
+# 日志配置
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_dir: "log"
+  log_file: "bot.log"
+
+# 其他配置
+settings:
+  # 调试模式
+  debug: false
+  # 自动重连
+  auto_reconnect: true
+  # 重连间隔（秒）
+  reconnect_interval: 5

@@ -1,0 +1,6 @@
+websockets==16.0
+PyYAML==6.0.2
+python-dotenv==1.0.0
+requests==2.32.3
+openai==1.55.3
+aiohttp==3.11.10
