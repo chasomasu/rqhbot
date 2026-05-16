@@ -40,3 +40,19 @@
 [2026-05-16 16:47:50,540.540] INFO     terminal 'logger.py:127' | [Generator] 已加载 AI 客户端 | 默认 | 模型: 
 [2026-05-16 16:47:50,547.547] INFO     johalog 'style_learner.py:23' | 已加载 0 个用户风格记录
 [2026-05-16 16:47:50,552.552] INFO     johalog 'group_mode_config.py:27' | 已加载 0 个群组模式配置
+[2026-05-16 16:48:34,411.411] WARNING  Config 'config.py:369' | [setting] 未知配置项: bot
+[2026-05-16 16:48:34,411.411] WARNING  Config 'config.py:369' | [setting] 未知配置项: logging
+[2026-05-16 16:48:34,412.412] WARNING  Config 'config.py:369' | [setting] 未知配置项: settings
+[2026-05-16 16:48:35,361.361] INFO     johalog 'group_mode_config.py:27' | 已加载 0 个群组模式配置
+[2026-05-16 16:48:35,370.370] INFO     johalog 'style_learner.py:23' | 已加载 0 个用户风格记录
+[2026-05-16 16:48:35,374.374] INFO     terminal 'logger.py:127' | [消息队列] 已初始化，合并窗口: 120.0秒, 最大队列大小: 5, 最小合并数: 2
+[2026-05-16 16:48:36,202.202] INFO     terminal 'logger.py:127' | [Generator] 已加载 AI 客户端 | 默认 | 模型: 
+[2026-05-16 16:48:36,590.590] WARNING  joha.decision.knowledge.base 'base.py:232' | 未找到分片文件，尝试加载独立 JSON 文件
+[2026-05-16 16:48:36,594.594] INFO     johalog 'service.py:102' | 已加载 0 个知识库文档
+[2026-05-16 16:48:36,594.594] INFO     johalog 'service.py:105' | 已初始化 0 个群组模式
+[2026-05-16 16:48:36,596.596] INFO     johalog 'service.py:102' | 已加载 0 个知识库文档
+[2026-05-16 16:48:36,596.596] INFO     johalog 'service.py:105' | 已初始化 0 个群组模式
+[2026-05-16 16:48:36,599.599] INFO     terminal 'logger.py:127' | [消息队列] 已初始化，合并窗口: 120.0秒, 最大队列大小: 5, 最小合并数: 2
+[2026-05-16 16:48:37,395.395] INFO     terminal 'logger.py:127' | [Generator] 已加载 AI 客户端 | 默认 | 模型: 
+[2026-05-16 16:48:37,402.402] INFO     johalog 'style_learner.py:23' | 已加载 0 个用户风格记录
+[2026-05-16 16:48:37,406.406] INFO     johalog 'group_mode_config.py:27' | 已加载 0 个群组模式配置
