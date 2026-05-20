@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
+import json
 import logging
 import sys
 import types
@@ -52,6 +53,74 @@ class HotReloadPluginManager:
             plugins_pkg.__package__ = ""
             sys.modules["plugins"] = plugins_pkg
 
+        # 插件配置缓存
+        self._plugin_configs: Dict[str, Dict[str, Any]] = {}
+
+    def _load_plugin_config(self, plugin_name: str) -> Dict[str, Any]:
+        """加载插件配置 (plugin.json)
+
+        Args:
+            plugin_name: 插件名称
+
+        Returns:
+            插件配置字典，如果不存在或加载失败则返回默认配置
+        """
+        config_path = self.plugin_dir / plugin_name / "plugin.json"
+        default_config = {
+            "name": plugin_name,
+            "version": "1.0.0",
+            "description": "",
+            "author": "Unknown",
+            "enabled": True,
+            "priority": 100,
+            "dependencies": [],
+            "python_requires": ">=3.8",
+        }
+
+        if not config_path.exists():
+            return default_config
+
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
+            # 合并默认值
+            for key, value in default_config.items():
+                if key not in config:
+                    config[key] = value
+            self._plugin_configs[plugin_name] = config
+            return config
+        except Exception as e:
+            logger.warning(f"加载插件配置 {plugin_name} 失败: {e}，使用默认配置")
+            return default_config
+
+    def _check_dependencies(self, plugin_name: str, dependencies: List[str]) -> bool:
+        """检查插件依赖是否满足
+
+        Args:
+            plugin_name: 插件名称
+            dependencies: 依赖列表
+
+        Returns:
+            是否所有依赖都满足
+        """
+        if not dependencies:
+            return True
+
+        missing = []
+        for dep in dependencies:
+            # 简单检查：尝试导入包名
+            pkg_name = dep.split(">=")[0].split("<=")[0].split("==")[0].split("[")[0].strip()
+            try:
+                importlib.import_module(pkg_name)
+            except ImportError:
+                missing.append(dep)
+
+        if missing:
+            logger.error(f"插件 {plugin_name} 缺少依赖: {', '.join(missing)}")
+            return False
+
+        return True
+
     # ==================== 加载 / 重载 / 卸载 ====================
 
     async def load_plugin(
@@ -61,9 +130,10 @@ class HotReloadPluginManager:
 
         流程：
         1. 如果已加载，先卸载旧版
-        2. 使用 importlib.reload() 重新导入 Python 模块
-        3. 查找 PluginBase 子类并实例化
-        4. 调用 instance.on_load() 完成事件订阅和初始化
+        2. 检查 plugin.json 配置（enabled、dependencies）
+        3. 使用 importlib.reload() 重新导入 Python 模块
+        4. 查找 PluginBase 子类并实例化
+        5. 调用 instance.on_load() 完成事件订阅和初始化
 
         插件以完整包形式加载（如 plugins.yiyichat.main），
         预注册包到 sys.modules 避免 __init__.py 中的循环导入。
@@ -79,6 +149,19 @@ class HotReloadPluginManager:
         # 如果已经加载，先卸载旧版（取消订阅 + 取消任务）
         if plugin_name in self.plugins:
             await self.unload_plugin(plugin_name)
+
+        # 加载插件配置
+        config = self._load_plugin_config(plugin_name)
+
+        # 检查是否启用
+        if not config.get("enabled", True):
+            logger.info(f"插件 {plugin_name} 已禁用，跳过加载")
+            return False
+
+        # 检查依赖
+        dependencies = config.get("dependencies", [])
+        if not self._check_dependencies(plugin_name, dependencies):
+            return False
 
         main_file = self.plugin_dir / plugin_name / "main.py"
         if not main_file.exists():

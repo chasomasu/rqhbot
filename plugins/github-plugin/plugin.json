@@ -1,0 +1,12 @@
+{
+    "name": "github-plugin",
+    "version": "3.5.0",
+    "description": "GitHub Issue/PR 自动化管理，支持自动审阅、标签、评论",
+    "author": "rqhbot",
+    "enabled": true,
+    "priority": 50,
+    "dependencies": [
+        "openai>=1.55"
+    ],
+    "python_requires": ">=3.8"
+}

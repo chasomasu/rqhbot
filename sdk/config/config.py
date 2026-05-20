@@ -15,6 +15,9 @@ from typing import Any, Dict, Final, Optional, TypeAlias
 import yaml
 from dotenv import load_dotenv
 
+# 日志器
+logger = logging.getLogger(__name__)
+
 # 加载环境变量
 _env_path: Path = Path(__file__).parent.parent / ".env"
 load_dotenv(_env_path)
@@ -66,7 +69,7 @@ class ConfigManager:
                     sort_keys=False,
                 )
         except Exception as e:
-            print(f"[配置] 保存失败: {e}")
+            logger.error("[配置] 保存失败: %s", e)
 
     # ---- 通用读写 ----
 
@@ -118,18 +121,13 @@ class ConfigManager:
 
     def show(self) -> None:
         """显示当前配置"""
-        print("\n" + "=" * 50)
-        print("  当前配置")
-        print("=" * 50)
-        print(
-            yaml.dump(
-                self.config,
-                default_flow_style=False,
-                allow_unicode=True,
-                sort_keys=False,
-            )
+        config_str = yaml.dump(
+            self.config,
+            default_flow_style=False,
+            allow_unicode=True,
+            sort_keys=False,
         )
-        print("=" * 50 + "\n")
+        logger.info("当前配置:\n%s", config_str)
 
     # ==================== NapCat 配置 ====================
 
@@ -276,12 +274,14 @@ _logging_setup_done: bool = False
 def setup_logging(
     log_level: Optional[str] = None,
     log_dir: Optional[str] = None,
+    backup_count: int = 30,
 ) -> None:
-    """设置日志系统（按日期分隔文件，幂等调用）
+    """设置日志系统（按日期轮转，保留最近30天，幂等调用）
 
     Args:
         log_level: 日志级别，默认从 Config 读取
         log_dir: 日志目录，默认从 Config 读取
+        backup_count: 保留的日志文件数量，默认30
     """
     global _logging_setup_done
     if _logging_setup_done:
@@ -295,16 +295,24 @@ def setup_logging(
     log_path: Path = Path(directory)
     log_path.mkdir(parents=True, exist_ok=True)
 
-    today: str = datetime.now().strftime("%Y-%m-%d")
-    log_file: Path = log_path / f"{today}.log"
+    log_file: Path = log_path / "bot.log"
 
     # 根日志器
     root: logging.Logger = logging.getLogger()
     root.setLevel(getattr(logging, level.upper(), logging.INFO))
     root.handlers.clear()
 
-    # 文件处理器
-    fh: logging.FileHandler = logging.FileHandler(log_file, encoding="utf-8")
+    # 文件处理器（按日期轮转）
+    fh: logging.handlers.TimedRotatingFileHandler = (
+        logging.handlers.TimedRotatingFileHandler(
+            str(log_file),
+            when="midnight",
+            interval=1,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    )
+    fh.suffix = "%Y-%m-%d"
     fh.setLevel(getattr(logging, level.upper(), logging.INFO))
     fh.setFormatter(logging.Formatter(Config.LOG_FORMAT))
     root.addHandler(fh)

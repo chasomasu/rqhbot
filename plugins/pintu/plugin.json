@@ -1,0 +1,12 @@
+{
+    "name": "pintu",
+    "version": "1.0.0",
+    "description": "九宫格拼图游戏，支持多人协作完成拼图",
+    "author": "pintu",
+    "enabled": true,
+    "priority": 100,
+    "dependencies": [
+        "Pillow>=9.0"
+    ],
+    "python_requires": ">=3.8"
+}

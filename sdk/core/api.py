@@ -416,4 +416,41 @@ class BotAPI:
             APIResponse
         """
         return await self.client.get_version_info()
+
+    # ======================== 性能监控 ========================
+
+    def get_performance_stats(self) -> Dict[str, Any]:
+        """获取性能统计信息
+
+        Returns:
+            包含以下字段的字典:
+            - total_messages: 总消息数
+            - total_processing_time: 总处理时间（秒）
+            - avg_latency: 平均延迟（秒）
+            - reconnect_attempts: 重连尝试次数
+            - is_connected: 是否已连接
+            - queue_size: 消息队列当前大小
+        """
+        stats = self.client.get_performance_stats()
+        # 添加队列大小信息
+        if hasattr(self.client, "msg_queue") and self.client.msg_queue is not None:
+            stats["queue_size"] = self.client.msg_queue.qsize()
+        else:
+            stats["queue_size"] = 0
+        return stats
+
+    def get_connection_status(self) -> Dict[str, Any]:
+        """获取连接状态信息
+
+        Returns:
+            包含以下字段的字典:
+            - connected: 是否已连接
+            - ws_url: WebSocket 地址
+            - reconnect_attempts: 重连尝试次数
+        """
+        return {
+            "connected": self.client.connected,
+            "ws_url": self.client.ws_url,
+            "reconnect_attempts": self.client._reconnect_attempts,
+        }
     
