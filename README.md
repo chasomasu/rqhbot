@@ -4,7 +4,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Version](https://img.shields.io/badge/Version-3.0.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.5.0-orange.svg)
 
 一个基于 NapCat OneBot11 协议的 Python QQ 机器人开发框架
 
@@ -118,7 +118,7 @@ rqhbot/
 
 <div align="center">
 
-**版本**: 3.0.0 | **最后更新**: 2026-05-16
+**版本**: 3.5.0 | **最后更新**: 2026-05-16
 
 Made with ❤️ by RqhBot Team
 
