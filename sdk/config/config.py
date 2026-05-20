@@ -48,7 +48,7 @@ class ConfigManager:
                     loaded: Any = yaml.safe_load(f)
                     self.config = loaded if isinstance(loaded, dict) else {}
             except Exception as e:
-                print(f"[配置] 加载失败: {e}，使用空配置")
+                logger.error("[配置] 加载失败: %s，使用空配置", e)
                 self.config = {}
         else:
             self.config = {}

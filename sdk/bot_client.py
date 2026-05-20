@@ -128,17 +128,21 @@ class BotClient:
 
     async def _print_group_message(self, event: GroupMessageEvent) -> None:
         """异步打印群消息"""
-        print(
-            f"[群消息] 群:{event.group_id} "
-            f"用户:{event.user_name}({event.user_id}): "
-            f"{event.message.plain_text}"
+        logger.info(
+            "[群消息] 群:%s 用户:%s(%s): %s",
+            event.group_id,
+            event.user_name,
+            event.user_id,
+            event.message.plain_text,
         )
 
     async def _print_private_message(self, event: PrivateMessageEvent) -> None:
         """异步打印私聊消息"""
-        print(
-            f"[私聊] 用户:{event.user_name}({event.user_id}): "
-            f"{event.message.plain_text}"
+        logger.info(
+            "[私聊] 用户:%s(%s): %s",
+            event.user_name,
+            event.user_id,
+            event.message.plain_text,
         )
 
     # ======================== 装饰器式事件注册 ========================
