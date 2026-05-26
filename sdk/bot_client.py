@@ -8,7 +8,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from pathlib import Path
-from typing import Any, Awaitable, Callable, Dict, List, Optional, TypeAlias
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Set, TypeAlias
 
 from sdk.config import setup_logging
 from sdk.core import BotAPI, NapCatClient
@@ -52,6 +52,7 @@ class BotClient:
         self._private_message_handlers: List[PrivateMsgHandler] = []
         self._notice_handlers: List[NoticeHandler] = []
         self._request_handlers: List[RequestHandler] = []
+        self._tracked_tasks: Set[asyncio.Task[Any]] = set()
 
         self.plugin_manager: PluginManager = PluginManager(self.api, self.event_bus)
         self.hot_reload_manager: HotReloadPluginManager = HotReloadPluginManager(self._plugins_dir)
@@ -76,13 +77,9 @@ class BotClient:
         async def _handle_group(data: Dict[str, Any]) -> None:
             try:
                 event: GroupMessageEvent = GroupMessageEvent.from_dict(data)
-                asyncio.create_task(self._print_group_message(event))
+                self._fire_task(self._print_group_message(event))
                 await self.event_bus.publish(event)
-                for handler in self._group_message_handlers:
-                    try:
-                        asyncio.create_task(handler(event))
-                    except Exception as e:
-                        logger.error(f"处理群消息事件时出错: {e}", exc_info=True)
+                self._dispatch_to_handlers(event, self._group_message_handlers)
             except Exception as e:
                 logger.error(f"处理群消息时出错: {e}", exc_info=True)
 
@@ -90,13 +87,9 @@ class BotClient:
         async def _handle_private(data: Dict[str, Any]) -> None:
             try:
                 event: PrivateMessageEvent = PrivateMessageEvent.from_dict(data)
-                asyncio.create_task(self._print_private_message(event))
+                self._fire_task(self._print_private_message(event))
                 await self.event_bus.publish(event)
-                for handler in self._private_message_handlers:
-                    try:
-                        asyncio.create_task(handler(event))
-                    except Exception as e:
-                        logger.error(f"处理私聊消息事件时出错: {e}", exc_info=True)
+                self._dispatch_to_handlers(event, self._private_message_handlers)
             except Exception as e:
                 logger.error(f"处理私聊消息时出错: {e}", exc_info=True)
 
@@ -105,11 +98,7 @@ class BotClient:
             try:
                 event: NoticeEvent = NoticeEvent.from_dict(data)
                 await self.event_bus.publish(event)
-                for handler in self._notice_handlers:
-                    try:
-                        asyncio.create_task(handler(event))
-                    except Exception as e:
-                        logger.error(f"处理通知事件时出错: {e}", exc_info=True)
+                self._dispatch_to_handlers(event, self._notice_handlers)
             except Exception as e:
                 logger.error(f"处理通知事件时出错: {e}", exc_info=True)
 
@@ -118,13 +107,41 @@ class BotClient:
             try:
                 event: RequestEvent = RequestEvent.from_dict(data)
                 await self.event_bus.publish(event)
-                for handler in self._request_handlers:
-                    try:
-                        asyncio.create_task(handler(event))
-                    except Exception as e:
-                        logger.error(f"处理请求事件时出错: {e}", exc_info=True)
+                self._dispatch_to_handlers(event, self._request_handlers)
             except Exception as e:
                 logger.error(f"处理请求事件时出错: {e}", exc_info=True)
+
+    def _fire_task(self, coro: Awaitable[Any]) -> None:
+        """创建后台任务并追踪，异常会被记录而非静默丢失"""
+        task = asyncio.ensure_future(coro)
+        self._tracked_tasks.add(task)
+        task.add_done_callback(self._tracked_tasks.discard)
+        task.add_done_callback(self._on_task_error)
+
+    @staticmethod
+    def _on_task_error(task: asyncio.Task[Any]) -> None:
+        if task.cancelled():
+            return
+        exc = task.exception()
+        if exc is not None:
+            logger.error(f"后台任务异常: {exc}", exc_info=exc)
+
+    def _dispatch_to_handlers(
+        self, event: Any, handlers: List[Callable[..., Any]]
+    ) -> None:
+        """将事件分发给处理器列表，追踪任务并捕获异常"""
+        for handler in handlers:
+            try:
+                self._fire_task(handler(event))
+            except Exception as e:
+                logger.error(f"注册处理器任务时出错: {e}", exc_info=True)
+
+    def _cancel_tracked_tasks(self) -> None:
+        """取消所有正在追踪的后台任务"""
+        for task in self._tracked_tasks:
+            if not task.done():
+                task.cancel()
+        self._tracked_tasks.clear()
 
     async def _print_group_message(self, event: GroupMessageEvent) -> None:
         """异步打印群消息"""
@@ -282,6 +299,7 @@ class BotClient:
         except Exception as e:
             logger.error(f"发生错误: {e}", exc_info=True)
         finally:
+            self._cancel_tracked_tasks()
             await self.client.disconnect()
             logger.info("机器人已关闭")
 

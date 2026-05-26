@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from typing import (
-    Any, Awaitable, Callable, Dict, List, Optional, Union, TypeAlias, Type,
+    Any, Awaitable, Callable, Dict, List, Optional, TypeAlias,
 )
 from typing import Protocol, runtime_checkable
 
@@ -121,6 +121,89 @@ class IClient(Protocol):
         """
         ...
 
+    # ---- 段消息发送 ----
+    async def send_group_message_segments(
+        self,
+        group_id: int,
+        segments: List[MessageSegmentType],
+        reply_message_id: Optional[int] = None,
+    ) -> APIResponse:
+        """发送图文混排群消息（数组格式）"""
+        ...
+
+    async def send_private_message_segments(
+        self,
+        user_id: int,
+        segments: List[MessageSegmentType],
+        reply_message_id: Optional[int] = None,
+    ) -> APIResponse:
+        """发送图文混排私聊消息（数组格式）"""
+        ...
+
+    # ---- 消息管理 ----
+    async def delete_message(self, message_id: int) -> APIResponse:
+        """撤回/删除消息"""
+        ...
+
+    async def get_message(self, message_id: int) -> APIResponse:
+        """获取指定消息"""
+        ...
+
+    # ---- 群组管理 ----
+    async def get_group_list(self) -> APIResponse:
+        """获取群列表"""
+        ...
+
+    async def get_group_member_list(self, group_id: int) -> APIResponse:
+        """获取群成员列表"""
+        ...
+
+    async def get_group_member_info(self, group_id: int, user_id: int) -> APIResponse:
+        """获取群成员信息"""
+        ...
+
+    async def set_group_ban(self, group_id: int, user_id: int, duration: int = 1800) -> APIResponse:
+        """设置群禁言"""
+        ...
+
+    async def set_group_kick(self, group_id: int, user_id: int, reject_add_request: bool = False) -> APIResponse:
+        """踢出群成员"""
+        ...
+
+    async def set_group_card(self, group_id: int, user_id: int, card: str = "") -> APIResponse:
+        """设置群成员名片"""
+        ...
+
+    # ---- 好友管理 ----
+    async def get_friend_list(self) -> APIResponse:
+        """获取好友列表"""
+        ...
+
+    async def get_login_info(self) -> APIResponse:
+        """获取登录信息"""
+        ...
+
+    async def get_stranger_info(self, user_id: int) -> APIResponse:
+        """获取陌生人信息"""
+        ...
+
+    # ---- 请求处理 ----
+    async def set_friend_add_request(self, flag: str, approve: bool = True, remark: str = "") -> APIResponse:
+        """处理好友请求"""
+        ...
+
+    async def set_group_add_request(self, flag: str, sub_type: str, approve: bool = True, reason: str = "") -> APIResponse:
+        """处理群请求"""
+        ...
+
+    async def send_like(self, user_id: int, times: int = 1) -> APIResponse:
+        """发送赞"""
+        ...
+
+    async def get_version_info(self) -> APIResponse:
+        """获取版本信息"""
+        ...
+
     # ---- 事件注册 ----
     def on_message(self, message_type: str) -> Callable[[EventHandler], EventHandler]:
         """装饰器 —— 注册消息处理器
@@ -133,75 +216,18 @@ class IClient(Protocol):
         """
         ...
 
-
-# ==================== 事件分发器接口 ====================
-
-class IEventDispatcher(ABC):
-    """事件分发器抽象基类 —— 负责事件的注册、管理与分发"""
-
-    def __init__(self) -> None:
-        self._handlers: Dict[str, List[Dict[str, Any]]] = {
-            "group": [],
-            "private": [],
-            "notice": [],
-            "request": [],
-        }
-        self._event_types: Dict[str, Any] = {}
-
-    @abstractmethod
-    def register_handler(
-        self,
-        event_type: str,
-        handler: Callable[..., Any],
-        priority: int = 0,
-        name: Optional[str] = None,
-    ) -> None:
-        """注册事件处理器
-
-        Args:
-            event_type: 事件类型
-            handler: 处理器函数（同步 / 异步均可）
-            priority: 优先级，越大越高
-            name: 处理器名称（调试用）
-        """
+    # ---- 连接事件监听 ----
+    def add_connection_listener(self, listener: Any) -> None:
+        """添加连接事件监听器"""
         ...
 
-    @abstractmethod
-    def unregister_handler(self, event_type: str, handler: Callable[..., Any]) -> bool:
-        """注销事件处理器
-
-        Args:
-            event_type: 事件类型
-            handler: 处理器函数
-
-        Returns:
-            是否成功注销
-        """
+    def remove_connection_listener(self, listener: Any) -> None:
+        """移除连接事件监听器"""
         ...
 
-    @abstractmethod
-    async def dispatch(self, event_type: str, data: Dict[str, Any]) -> None:
-        """分发事件
-
-        Args:
-            event_type: 事件类型
-            data: 事件数据
-
-        Raises:
-            ValueError: 未知事件类型
-        """
-        ...
-
-    @abstractmethod
-    def get_handler_count(self, event_type: Optional[str] = None) -> int:
-        """获取已注册处理器数量
-
-        Args:
-            event_type: 事件类型，None 表示全部
-
-        Returns:
-            处理器数量
-        """
+    # ---- 性能统计 ----
+    def get_performance_stats(self) -> Dict[str, Any]:
+        """获取性能统计信息"""
         ...
 
 

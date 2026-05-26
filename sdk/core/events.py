@@ -143,7 +143,7 @@ class GroupMessageEvent(BaseEvent):
         msg = Message.from_raw(data.get("message", raw_message), raw_message)
 
         snd: SenderInfo = data.get("sender", {})
-        uname: str = str(snd.get("nickname", "") or snd.get("card", ""))
+        uname: str = str(snd.get("card", "") or snd.get("nickname", ""))
 
         return cls(
             time=int(data.get("time", 0)),
@@ -190,8 +190,8 @@ class PrivateMessageEvent(BaseEvent):
         snd: SenderInfo = data.get("sender", {})
         uname: str = str(
             data.get("user_name", "")
-            or snd.get("nickname", "")
             or snd.get("card", "")
+            or snd.get("nickname", "")
         )
 
         return cls(
@@ -202,7 +202,7 @@ class PrivateMessageEvent(BaseEvent):
             sub_type=str(data.get("sub_type", "")),
             message_id=int(data.get("message_id", 0)),
             user_id=int(data.get("user_id", 0)),
-            user_name=str(data.get("user_name", "")),
+            user_name=uname,
             message=msg,
             raw_message=str(data.get("raw_message", "")),
             font=int(data.get("font", 0)),
@@ -248,18 +248,15 @@ class NoticeEvent(BaseEvent):
 @dataclass
 class GroupIncreaseNotice(NoticeEvent):
     """群成员增加"""
+    notice_type: str = "group_increase"
     sub_type: str = ""
     operator_id: int = 0
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
+        base = NoticeEvent._build(data)
         return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "notice")),
-            notice_type="group_increase",
-            user_id=int(data.get("user_id", 0)),
-            group_id=int(data.get("group_id", 0)),
+            **{k: v for k, v in base.__dict__.items()},
             sub_type=str(data.get("sub_type", "")),
             operator_id=int(data.get("operator_id", 0)),
         )
@@ -268,18 +265,15 @@ class GroupIncreaseNotice(NoticeEvent):
 @dataclass
 class GroupDecreaseNotice(NoticeEvent):
     """群成员减少"""
+    notice_type: str = "group_decrease"
     sub_type: str = ""
     operator_id: int = 0
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
+        base = NoticeEvent._build(data)
         return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "notice")),
-            notice_type="group_decrease",
-            user_id=int(data.get("user_id", 0)),
-            group_id=int(data.get("group_id", 0)),
+            **{k: v for k, v in base.__dict__.items()},
             sub_type=str(data.get("sub_type", "")),
             operator_id=int(data.get("operator_id", 0)),
         )
@@ -288,19 +282,16 @@ class GroupDecreaseNotice(NoticeEvent):
 @dataclass
 class GroupBanNotice(NoticeEvent):
     """群禁言"""
+    notice_type: str = "group_ban"
     sub_type: str = ""
     operator_id: int = 0
     duration: int = 0
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
+        base = NoticeEvent._build(data)
         return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "notice")),
-            notice_type="group_ban",
-            user_id=int(data.get("user_id", 0)),
-            group_id=int(data.get("group_id", 0)),
+            **{k: v for k, v in base.__dict__.items()},
             sub_type=str(data.get("sub_type", "")),
             operator_id=int(data.get("operator_id", 0)),
             duration=int(data.get("duration", 0)),
@@ -310,18 +301,15 @@ class GroupBanNotice(NoticeEvent):
 @dataclass
 class GroupRecallNotice(NoticeEvent):
     """群消息撤回"""
+    notice_type: str = "group_recall"
     operator_id: int = 0
     message_id: int = 0
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
+        base = NoticeEvent._build(data)
         return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "notice")),
-            notice_type="group_recall",
-            user_id=int(data.get("user_id", 0)),
-            group_id=int(data.get("group_id", 0)),
+            **{k: v for k, v in base.__dict__.items()},
             operator_id=int(data.get("operator_id", 0)),
             message_id=int(data.get("message_id", 0)),
         )
@@ -330,16 +318,14 @@ class GroupRecallNotice(NoticeEvent):
 @dataclass
 class FriendRecallNotice(NoticeEvent):
     """好友消息撤回"""
+    notice_type: str = "friend_recall"
     message_id: int = 0
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
+        base = NoticeEvent._build(data)
         return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "notice")),
-            notice_type="friend_recall",
-            user_id=int(data.get("user_id", 0)),
+            **{k: v for k, v in base.__dict__.items()},
             message_id=int(data.get("message_id", 0)),
         )
 
@@ -347,17 +333,14 @@ class FriendRecallNotice(NoticeEvent):
 @dataclass
 class PokeNotice(NoticeEvent):
     """戳一戳通知"""
+    notice_type: str = "notify"
     target_id: int = 0
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
+        base = NoticeEvent._build(data)
         return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "notice")),
-            notice_type="notify",
-            user_id=int(data.get("user_id", 0)),
-            group_id=int(data.get("group_id", 0)),
+            **{k: v for k, v in base.__dict__.items()},
             target_id=int(data.get("target_id", 0)),
         )
 
@@ -396,36 +379,26 @@ class RequestEvent(BaseEvent):
 @dataclass
 class FriendRequestEvent(RequestEvent):
     """好友申请"""
+    request_type: str = "friend"
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
-        return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "request")),
-            request_type="friend",
-            user_id=int(data.get("user_id", 0)),
-            comment=str(data.get("comment", "")),
-            flag=str(data.get("flag", "")),
-        )
+        base = RequestEvent._build(data)
+        return cls(**{k: v for k, v in base.__dict__.items()})
 
 
 @dataclass
 class GroupRequestEvent(RequestEvent):
     """群邀请 / 加群申请"""
+    request_type: str = "group"
     group_id: int = 0
     sub_type: str = ""
 
     @classmethod
     def _build(cls, data: EventData) -> Self:
+        base = RequestEvent._build(data)
         return cls(
-            time=int(data.get("time", 0)),
-            self_id=int(data.get("self_id", 0)),
-            post_type=str(data.get("post_type", "request")),
-            request_type="group",
-            user_id=int(data.get("user_id", 0)),
+            **{k: v for k, v in base.__dict__.items()},
             group_id=int(data.get("group_id", 0)),
             sub_type=str(data.get("sub_type", "")),
-            comment=str(data.get("comment", "")),
-            flag=str(data.get("flag", "")),
         )

@@ -398,31 +398,35 @@ class NapCatClient(IClient):
                     future.set_result(data)
                 return
         
-        # 处理 NapCat 消息格式
         post_type = data.get("post_type")
         message_type = data.get("message_type")
         
-        # 收集需要处理的事件类型
         event_types = []
-        if post_type and post_type not in event_types:
+        if post_type:
             event_types.append(post_type)
-        if message_type and message_type not in event_types:
+        if message_type and message_type != post_type:
             event_types.append(message_type)
         
-        # 遍历事件类型，避免重复处理
+        seen: set[int] = set()
         for event_type in event_types:
-            if event_type in self.message_handlers:
-                handlers = self.message_handlers[event_type]
-                if not handlers:
+            for handler in self.message_handlers.get(event_type, []):
+                handler_id = id(handler)
+                if handler_id in seen:
                     continue
-                    
-                # 批量执行处理器，减少异常处理开销
-                for handler in handlers:
-                    try:
-                        # 使用 asyncio.create_task 并发执行，不阻塞
-                        asyncio.create_task(handler(data))
-                    except Exception as e:
-                        logger.error(f"注册消息处理器时出错: {e}", exc_info=True)
+                seen.add(handler_id)
+                try:
+                    task = asyncio.create_task(handler(data))
+                    task.add_done_callback(self._on_handler_task_done)
+                except Exception as e:
+                    logger.error(f"创建处理器任务失败: {e}", exc_info=True)
+
+    @staticmethod
+    def _on_handler_task_done(task: asyncio.Task[Any]) -> None:
+        if task.cancelled():
+            return
+        exc = task.exception()
+        if exc is not None:
+            logger.error(f"消息处理器异常: {exc}", exc_info=exc)
 
     def on_message(self, message_type: str) -> Decorator:
         """装饰器：注册消息事件处理器
