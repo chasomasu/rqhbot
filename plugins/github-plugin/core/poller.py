@@ -57,8 +57,11 @@ async def _poll_once(
     notify: Callable[[str], None] | None = None,
 ) -> None:
     """执行一次完整的轮询周期。"""
-    repos = config.get("repos", [])
+    repos: list[str] = config.get("active_repos", config.get("active_repos", []))
+    if isinstance(repos, str):
+        repos = [r.strip() for r in repos.split(",") if r.strip()]
     if not repos:
+        logger.debug("轮询: 未配置 active_repos，跳过")
         return
 
     seen_issues_key = "_poll_seen_issues"

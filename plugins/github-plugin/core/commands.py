@@ -151,7 +151,9 @@ async def _handle_review_command(
         /gh review <pr_number> [quick|deep]           — 单仓库，自动选择
         /gh review <repo_index> <pr_number> [quick|deep] — 多仓库，指定索引
     """
-    repos = config.get("repos", [])
+    repos: list[str] = config.get("active_repos", config.get("repos", []))
+    if isinstance(repos, str):
+        repos = [r.strip() for r in repos.split(",") if r.strip()]
     if not repos:
         return "未绑定仓库，请检查配置"
 

@@ -13,13 +13,13 @@ _REVIEW_RETRIES = 3
 
 
 def _token(config: dict, repo: str = "") -> str:
-    """获取 API token。优先 per-repo token，否则全局 github_pat。"""
+    """获取 API token。优先 per-repo token，否则全局 github_write_token。"""
     monitor = config.get("_monitor")
     if monitor is not None and repo:
         t = monitor.get_token(repo)
         if t:
             return t
-    return config.get("github_pat", "")
+    return config.get("github_write_token", config.get("github_pat", ""))
 
 
 async def auto_review_pr(

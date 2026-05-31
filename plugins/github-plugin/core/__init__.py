@@ -15,8 +15,8 @@ from .api import (
     get_issue,
     list_repo_issues,
     list_repo_pulls,
-    create_comment,
     close_pr,
+    post_issue_comment as create_comment,
 )
 
 __all__ = [
