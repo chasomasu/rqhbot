@@ -118,7 +118,7 @@ rqhbot/
 
 <div align="center">
 
-**版本**: 3.5.0 | **最后更新**: 2026-05-16
+**版本**: 3.6.0 | **最后更新**: 2026-05-31
 
 Made with ❤️ by RqhBot Team
 
