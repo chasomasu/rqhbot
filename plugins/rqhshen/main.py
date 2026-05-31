@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 DATA_DIR = Path(__file__).parent / "data"
 
-class CultivationPlugin(PluginBase):
-    """Cultivation修仙插件 - 开灵、打坐、突破、排行榜等功能"""
+class RqhshenPlugin(PluginBase):
+    """Rqhshen修仙插件 - 开灵、打坐、突破、排行榜等功能"""
     
     def __init__(self):
         super().__init__()
-        self.name = "cultivation"
+        self.name = "rqhshen"
         self.version = "2.0.0"
         self.cultivation_system = game.CultivationSystem()
         self.allowed_groups = set()

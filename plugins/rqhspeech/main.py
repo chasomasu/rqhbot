@@ -23,12 +23,12 @@ from .archive_manager import auto_archive
 logger = logging.getLogger(__name__)
 
 
-class StatisticsPlugin(PluginBase):
-    """Statistics 发言统计插件 - 发言日榜、周榜、月榜、用户统计等功能"""
+class RqhspeechPlugin(PluginBase):
+    """Rqhspeech 发言统计插件 - 发言日榜、周榜、月榜、用户统计等功能"""
 
     def __init__(self):
         super().__init__()
-        self.name = "statistics"
+        self.name = "rqhspeech"
         self.version = "4.0.0"
         self.config = {}
 

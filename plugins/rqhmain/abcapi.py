@@ -428,7 +428,7 @@ class TextToImageAPI:
     
     def convert_for_bot(self, 
                        text: str, 
-                       save_dir: str = "plugins/kinkus/picall") -> str:
+                       save_dir: str = "plugins/rqhmain/picall") -> str:
         """
         专为机器人设计的转换方法
         

@@ -29,12 +29,12 @@ with open(os.path.join(config_dir, "help.md"), "r", encoding="utf-8") as f:
     helptxt = str(helpmd)
 
 
-class KinkusPlugin(PluginBase):
-    """Kinkus综合插件 - 运势、随机图、天气、新闻、IP查询等功能"""
+class RqhmainPlugin(PluginBase):
+    """Rqhmain综合插件 - 运势、随机图、天气、新闻、IP查询等功能"""
 
     def __init__(self):
         super().__init__()
-        self.name = "kinkus"
+        self.name = "rqhmain"
         self.version = "2.0.0"
         self.description = "综合插件 - 运势、随机图、天气、新闻、IP查询等功能"
         self.author = "rqh"
@@ -62,13 +62,13 @@ class KinkusPlugin(PluginBase):
     @filter_registry.group_filter
     async def rqhbase_group(self, event: GroupMessageEvent):
         raw_message = event.message.plain_text.strip()
-        logger.info(f"[Kinkus插件] 群消息: {event.user_id}: {raw_message}")
+        logger.info(f"[Rqhmain插件] 群消息: {event.user_id}: {raw_message}")
         await self._process_keywords(event, raw_message)
 
     @filter_registry.private_filter
     async def rqhbase_private(self, event: PrivateMessageEvent):
         raw_message = event.message.plain_text.strip()
-        logger.info(f"[Kinkus插件] 私聊消息: {event.user_id}: {raw_message}")
+        logger.info(f"[Rqhmain插件] 私聊消息: {event.user_id}: {raw_message}")
         await self._process_keywords(event, raw_message)
 
     async def _process_keywords(self, event, raw_message: str):
