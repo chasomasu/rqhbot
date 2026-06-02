@@ -1,0 +1,10 @@
+{
+  "name": "group_summary",
+  "version": "1.0.0",
+  "description": "群总结插件 - 基于用户消息总结发言和风格并生成报告",
+  "author": "rqh",
+  "enabled": true,
+  "priority": 100,
+  "dependencies": [],
+  "python_requires": ">=3.8"
+}
