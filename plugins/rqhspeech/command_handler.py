@@ -601,7 +601,7 @@ class CommandHandler:
     async def handle_auto_archive(self, event: GroupMessage) -> bool:
         """
         处理自动归档命令（管理员专用）
-        自动检查从上次备份后的所有日期并归档
+        自动检查从上次归档后的所有日期并归档
         """
         user_id = str(event.sender.user_id)
     
