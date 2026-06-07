@@ -354,7 +354,7 @@ class DailyArchiver:
         return dates_to_archive
     
     def auto_archive(self) -> Tuple[bool, str]:
-        """自动归档从上次备份后的所有日期"""
+        """自动归档从上次归档后的所有日期"""
         print("=" * 50)
         print("开始自动归档处理")
         print("=" * 50)

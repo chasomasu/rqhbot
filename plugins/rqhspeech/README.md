@@ -91,20 +91,19 @@
 
 ```
 rqhspeech/
-├── plugin.py              # 插件主入口
+├── main.py                # 插件入口
 ├── speech_config.py       # 配置管理类
 ├── data_manager.py        # 数据管理模块
 ├── command_handler.py     # 命令处理器
 ├── archive_manager.py     # 归档管理器
 ├── speech_config.json     # 配置文件（自动生成）
-├── base_data/             # 数据存储目录
+├── data/                  # 数据存储目录
 │   ├── users/             # 用户数据文件
 │   ├── daily/             # 每日统计数据
-│   └── weekly/            # 每周统计数据
-├── daily_archives/        # 归档数据
-│   ├── rankings/          # 排行榜文件 (JSON/CSV)
-│   └── backup_*/          # 自动备份目录
-└── logs/                  # 运行日志
+│   ├── weekly/            # 每周统计数据
+│   ├── archives/          # 归档排行文件
+│   └── logs/              # 运行日志
+└── plugin.json            # 插件元数据
 ```
 
 ## ⚙️ 高级配置
@@ -121,8 +120,7 @@ self.RANKING_MONTHLY_TOP_N = 10 # 月榜前10名
 
 ### 数据归档策略
 
-- **自动归档**：管理员发送 `自动归档` 命令，系统会自动检查并归档上次备份后的所有日期
-- **备份机制**：归档前会自动在 `daily_archives/backup_日期/` 目录下备份用户数据
+- **自动归档**：管理员发送 `自动归档` 命令，系统会自动检查并归档上次归档后的所有日期
 - **文件格式**：同时生成 `.json`（详细数据）和 `.csv`（表格数据）两种格式
 
 ## 🔧 开发说明

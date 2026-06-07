@@ -26,6 +26,6 @@ rqhspeech_v2 插件
 - 删除用户 QQ号：删除指定用户（仅管理员）
 """
 
-from .plugin import rqhspeech
+from .main import RqhSpeechPlugin
 
-__all__ = ["rqhspeech"]
+__all__ = ["RqhSpeechPlugin"]
