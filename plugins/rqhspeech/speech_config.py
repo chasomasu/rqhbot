@@ -22,9 +22,8 @@ class SpeechConfig:
         self.ARCHIVES_DIR = os.path.join(self.DATA_DIR, "archives")
         self.DAILY_RANKINGS_DIR = os.path.join(self.ARCHIVES_DIR, "daily")
         self.WEEKLY_RANKINGS_DIR = os.path.join(self.ARCHIVES_DIR, "weekly")
-        self.BACKUPS_DIR = os.path.join(self.DATA_DIR, "backups")
-        self.DAILY_DATA_DIR = os.path.join(self.BACKUPS_DIR, "daily_all_zongjie")
-        self.WEEKLY_DATA_DIR = os.path.join(self.BACKUPS_DIR, "weekly_all_zongjie")
+        self.DAILY_DATA_DIR = os.path.join(self.DATA_DIR, "daily")
+        self.WEEKLY_DATA_DIR = os.path.join(self.DATA_DIR, "weekly")
         self.MONTHLY_DATA_DIR = os.path.join(self.DATA_DIR, "monthly")
         self.SEASONAL_DATA_DIR = os.path.join(self.DATA_DIR, "seasonal")
         self.YEARLY_DATA_DIR = os.path.join(self.DATA_DIR, "yearly")
@@ -63,7 +62,6 @@ class SpeechConfig:
         self.DISPLAY_DATE_FORMAT = "%Y年%m月%d日"
 
         self.ARCHIVE_DAILY = True
-        self.BACKUP_BEFORE_ARCHIVE = True
         self.ENABLE_LOGGING = True
 
         self._init_directories()
@@ -154,7 +152,6 @@ class SpeechConfig:
             self.ARCHIVES_DIR,
             self.DAILY_RANKINGS_DIR,
             self.WEEKLY_RANKINGS_DIR,
-            self.BACKUPS_DIR,
             self.DAILY_DATA_DIR,
             self.WEEKLY_DATA_DIR,
             self.MONTHLY_DATA_DIR,
@@ -216,7 +213,6 @@ USERS_DIR = SpeechConfig.USERS_DIR
 ARCHIVES_DIR = SpeechConfig.ARCHIVES_DIR
 DAILY_RANKINGS_DIR = SpeechConfig.DAILY_RANKINGS_DIR
 WEEKLY_RANKINGS_DIR = SpeechConfig.WEEKLY_RANKINGS_DIR
-BACKUPS_DIR = SpeechConfig.BACKUPS_DIR
 DAILY_DATA_DIR = SpeechConfig.DAILY_DATA_DIR
 WEEKLY_DATA_DIR = SpeechConfig.WEEKLY_DATA_DIR
 MONTHLY_DATA_DIR = SpeechConfig.MONTHLY_DATA_DIR
@@ -240,7 +236,6 @@ DATE_FORMAT = SpeechConfig.DATE_FORMAT
 DATETIME_FORMAT = SpeechConfig.DATETIME_FORMAT
 DISPLAY_DATE_FORMAT = SpeechConfig.DISPLAY_DATE_FORMAT
 ARCHIVE_DAILY = SpeechConfig.ARCHIVE_DAILY
-BACKUP_BEFORE_ARCHIVE = SpeechConfig.BACKUP_BEFORE_ARCHIVE
 ENABLE_LOGGING = SpeechConfig.ENABLE_LOGGING
 get_current_date = SpeechConfig.get_current_date
 get_current_datetime = SpeechConfig.get_current_datetime

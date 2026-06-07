@@ -1,3 +1,3 @@
-from .main import rqhwenda
+from .main import RqhWendaPlugin
 
-__all__ = ["rqhwenda"]
+__all__ = ["RqhWendaPlugin"]

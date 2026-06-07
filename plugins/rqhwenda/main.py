@@ -9,7 +9,7 @@ from sdk.core.events import GroupMessageEvent
 from sdk.pluginsystem import PluginBase, filter_registry
 
 # ==================== 数据层导入 ====================
-from .plugin import answer_manager, hmd, gly
+from .answer_manager import answer_manager, hmd, gly
 
 logger = logging.getLogger(__name__)
 
@@ -32,9 +32,9 @@ HELP_TEXT = """【问答插件使用说明】
 _COMMAND_PREFIXES = ("精确问", "模糊问", "修改", "删问答", "列出", "清空", "问答帮助")
 
 
-# ==================== 广告类 ====================
+# ==================== 插件类 ====================
 
-class rqhwenda(PluginBase):
+class RqhWendaPlugin(PluginBase):
     """rqhwenda 问答插件 —— 群内关键字自动问答
 
     支持两类匹配：

@@ -1,0 +1,10 @@
+{
+  "name": "rqhwenda",
+  "version": "3.0.0",
+  "description": "群内关键字自动问答插件，支持精确匹配和模糊匹配",
+  "author": "Rqh",
+  "enabled": true,
+  "priority": 100,
+  "dependencies": [],
+  "python_requires": ">=3.8"
+}

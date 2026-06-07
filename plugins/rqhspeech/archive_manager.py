@@ -1,13 +1,12 @@
 """
 归档管理模块 - 保留老版本的归档功能，添加自动检查功能
 
-自动检查从上次备份后的所有日期并归档
+自动检查从上次归档后的所有日期并归档
 """
 
 import json
 import csv
 import os
-import shutil
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional, Tuple
 
@@ -27,7 +26,6 @@ class DailyArchiver:
         """初始化"""
         self.users_dir = SpeechConfig.USERS_DIR
         self.archives_dir = SpeechConfig.DAILY_RANKINGS_DIR
-        self.backups_dir = SpeechConfig.BACKUPS_DIR
         self.last_archive_file = os.path.join(SpeechConfig.ARCHIVES_DIR, "last_archive.json")
     
     def get_all_user_files(self) -> List[str]:
@@ -276,39 +274,6 @@ class DailyArchiver:
             traceback.print_exc()
             return False, f"归档失败: {str(e)}"
     
-    def backup_user_data(self) -> str:
-        """备份用户数据"""
-        backup_dir = os.path.join(
-            self.backups_dir,
-            f"users_{SpeechConfig.get_current_date()}"
-        )
-        
-        try:
-            user_dirs = [self.users_dir]
-            if os.path.exists(SpeechConfig.LEGACY_USERS_DIR):
-                user_dirs.append(SpeechConfig.LEGACY_USERS_DIR)
-
-            os.makedirs(backup_dir, exist_ok=True)
-
-            seen_files = set()
-            for users_dir in user_dirs:
-                if not os.path.exists(users_dir):
-                    continue
-                for file in os.listdir(users_dir):
-                    if file.endswith(SpeechConfig.USER_FILE_EXTENSION) and file not in seen_files:
-                        seen_files.add(file)
-                        src = os.path.join(users_dir, file)
-                        dst = os.path.join(backup_dir, file)
-                        shutil.copy2(src, dst)
-
-            print(f"✅ 用户数据已备份到: {backup_dir}")
-            return backup_dir
-
-        except Exception as e:
-            print(f"❌ 备份用户数据时出错: {e}")
-        
-        return ""
-    
     def generate_archive_report(self, ranking_data: Dict[str, Any]) -> str:
         """生成归档报告"""
         total_users = ranking_data["总用户数"]
@@ -403,10 +368,6 @@ class DailyArchiver:
         print(f"找到 {len(dates_to_archive)} 个需要归档的日期:")
         for date in dates_to_archive:
             print(f"  - {date}")
-        
-        # 备份用户数据
-        if SpeechConfig.BACKUP_BEFORE_ARCHIVE:
-            self.backup_user_data()
         
         # 逐个归档日期
         results = []
