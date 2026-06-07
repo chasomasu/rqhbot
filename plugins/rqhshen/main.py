@@ -51,7 +51,7 @@ class RqhshenPlugin(PluginBase):
         
     # ==================== 其他功能函数 ====================
         
-    @filter_registry.group_filter
+    @filter_registry.group_server
     async def rqhbase_group(self, event: GroupMessageEvent):
         raw_message = event.message.plain_text.strip()
         text = raw_message
@@ -128,7 +128,7 @@ class RqhshenPlugin(PluginBase):
             logger.error(f"修炼处理失败: {e}", exc_info=True)
             await self.reply_with_event(event, f"操作失败: {e}")
                     
-    @filter_registry.private_filter
+    @filter_registry.private_server
     async def rqhbase_private(self, event: PrivateMessageEvent):
         raw_message = event.message.plain_text.strip()
         text = raw_message

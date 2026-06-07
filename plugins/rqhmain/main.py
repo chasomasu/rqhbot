@@ -59,13 +59,13 @@ class RqhmainPlugin(PluginBase):
         """插件卸载时调用"""
         logger.info(f"插件 {self.name} 卸载中")
 
-    @filter_registry.group_filter
+    @filter_registry.group_server
     async def rqhbase_group(self, event: GroupMessageEvent):
         raw_message = event.message.plain_text.strip()
         logger.info(f"[Rqhmain插件] 群消息: {event.user_id}: {raw_message}")
         await self._process_keywords(event, raw_message)
 
-    @filter_registry.private_filter
+    @filter_registry.private_server
     async def rqhbase_private(self, event: PrivateMessageEvent):
         raw_message = event.message.plain_text.strip()
         logger.info(f"[Rqhmain插件] 私聊消息: {event.user_id}: {raw_message}")

@@ -31,9 +31,9 @@ from .pluginsystem import (
     PluginBase,
     PluginManager,
     filter_registry,
-    group_message,
+    group_server,
     message_filter,
-    private_message,
+    private_server,
 )
 
 __version__: str = "3.5.0"
@@ -60,8 +60,8 @@ __all__: list[str] = [
     "PluginManager",
     "HotReloadPluginManager",
     "filter_registry",
-    "group_message",
-    "private_message",
+    "group_server",
+    "private_server",
     "message_filter",
     "Config",
     "setup_logging",

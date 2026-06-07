@@ -45,7 +45,7 @@ class RqhSpeechPlugin(PluginBase):
 
     # ==================== 消息处理 ====================
 
-    @filter_registry.group_filter
+    @filter_registry.group_server
     async def rqhbase_group(self, event: GroupMessageEvent) -> None:
         """处理群消息"""
         text = event.message.plain_text.strip()
@@ -72,7 +72,7 @@ class RqhSpeechPlugin(PluginBase):
         # 命令路由
         await self._route_command(event, text, user_id, group_id)
 
-    @filter_registry.private_filter
+    @filter_registry.private_server
     async def rqhbase_private(self, event: PrivateMessageEvent) -> None:
         """处理私聊消息"""
         text = event.message.plain_text.strip()

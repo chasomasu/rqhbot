@@ -149,7 +149,7 @@ rqhbot/
 在 `plugins/example/main.py` 中创建插件：
 
 ```python
-from sdk import PluginBase, group_message
+from sdk import PluginBase, group_server
 
 
 class ExamplePlugin(PluginBase):
@@ -157,7 +157,7 @@ class ExamplePlugin(PluginBase):
     version = "1.0.0"
     description = "示例插件"
 
-    @group_message(equals="ping")
+    @group_server(equals="ping")
     async def on_ping(self, event):
         if self.api is None:
             return

@@ -228,9 +228,9 @@ await self.api.send_private_message_segments(
 当 NapCat 上报数组格式消息时，SDK 会解析为 `Message` 对象：
 
 ```python
-from sdk.pluginsystem import group_message
+from sdk.pluginsystem import group_server
 
-@filter_registry.group_filter(prefix="")
+@filter_registry.group_server(prefix="")
 async def handle_group_message(self, event: GroupMessageEvent):
     text = event.message.plain_text
     raw = event.message.raw_message
@@ -244,9 +244,9 @@ async def handle_group_message(self, event: GroupMessageEvent):
 
 **解析图片和 @ 示例：**
 ```python
-from sdk.pluginsystem import group_message
+from sdk.pluginsystem import group_server
 
-@filter_registry.group_filter(prefix="")
+@filter_registry.group_server(prefix="")
 async def handle_group_message(self, event: GroupMessageEvent):
     images = []
     at_users = []
@@ -558,7 +558,7 @@ async def on_unload(self):
 
 ### 事件处理 ⭐ 必须使用过滤器
 
-#### filter_registry.group_filter / filter_registry.private_filter
+#### filter_registry.group_server / filter_registry.private_server
 
 插件消息接收使用过滤器装饰器，分为群聊和私聊两类。
 
@@ -571,7 +571,7 @@ class MyPlugin(PluginBase):
         super().__init__()
         self.name = "my_plugin"
 
-    @filter_registry.group_filter
+    @filter_registry.group_server
     async def group_ping(self, event: GroupMessageEvent):
         text = event.message.plain_text.strip()
         if text == "ping":
@@ -580,7 +580,7 @@ class MyPlugin(PluginBase):
                 message="pong!"
             )
 
-    @filter_registry.private_filter
+    @filter_registry.private_server
     async def private_echo(self, event: PrivateMessageEvent):
         text = event.message.plain_text.strip()
         if text.startswith("echo"):
@@ -601,8 +601,8 @@ class MyPlugin(PluginBase):
 - `custom`: 自定义过滤函数
 
 **说明：**
-- `@filter_registry.group_filter` 只接收群聊消息，事件类型为 `GroupMessageEvent`
-- `@filter_registry.private_filter` 只接收私聊消息，事件类型为 `PrivateMessageEvent`
+- `@filter_registry.group_server` 只接收群聊消息，事件类型为 `GroupMessageEvent`
+- `@filter_registry.private_server` 只接收私聊消息，事件类型为 `PrivateMessageEvent`
 - 可以不传过滤条件，在函数内部按业务分支判断
 - 多个过滤条件同时使用时是“并且”关系
 - 当前版本不兼容重写 `on_group_message()` / `on_private_message()` 接收消息
@@ -617,12 +617,12 @@ async def reply_with_event(event: Any, content: str)
 
 **示例：**
 ```python
-@filter_registry.group_filter
+@filter_registry.group_server
 async def group_help(self, event: GroupMessageEvent):
     if event.message.plain_text.strip() == "帮助":
         await self.reply_with_event(event, "群聊帮助")
 
-@filter_registry.private_filter
+@filter_registry.private_server
 async def private_help(self, event: PrivateMessageEvent):
     if event.message.plain_text.strip() == "帮助":
         await self.reply_with_event(event, "私聊帮助")
@@ -630,7 +630,7 @@ async def private_help(self, event: PrivateMessageEvent):
 
 ### 旧版事件处理（已移除）
 
-`on_group_message()` / `on_private_message()` 不再参与插件消息分发，旧插件必须迁移到 `filter_registry.group_filter` / `filter_registry.private_filter`。
+`on_group_message()` / `on_private_message()` 不再参与插件消息分发，旧插件必须迁移到 `filter_registry.group_server` / `filter_registry.private_server`。
 
 ### 工具方法
 
@@ -779,11 +779,11 @@ class HelloPlugin(PluginBase):
         self.description = "Hello World 插件"
         self.author = "Your Name"
 
-    @filter_registry.group_filter(equals="你好")
+    @filter_registry.group_server(equals="你好")
     async def hello_group(self, event: GroupMessageEvent):
         await self.reply_with_event(event, "你好！我是群聊机器人")
 
-    @filter_registry.private_filter(equals="你好")
+    @filter_registry.private_server(equals="你好")
     async def hello_private(self, event: PrivateMessageEvent):
         await self.reply_with_event(event, "你好！我是私聊机器人")
 ```
@@ -791,7 +791,7 @@ class HelloPlugin(PluginBase):
 ### 使用 API
 
 ```python
-@filter_registry.group_filter(equals="测试")
+@filter_registry.group_server(equals="测试")
 async def test_group(self, event: GroupMessageEvent):
     await self.reply_with_event(event, "自动回复")
     await self.api.send_group_message(event.group_id, "直接发送")

@@ -29,11 +29,11 @@ class HelloPlugin(PluginBase):
         self.description = "Hello World 插件"
         self.author = "Your Name"
 
-    @filter_registry.group_filter
+    @filter_registry.group_server
     async def hello_group(self, event: GroupMessageEvent):
         await self.reply_with_event(event, "你好！我是群聊机器人")
 
-    @filter_registry.private_filter
+    @filter_registry.private_server
     async def hello_private(self, event: PrivateMessageEvent):
         await self.reply_with_event(event, "你好！我是私聊机器人")
 ```
@@ -89,11 +89,11 @@ async def on_private_message(self, event):
 必须改成过滤器：
 
 ```python
-@filter_registry.group_filter
+@filter_registry.group_server
 async def handle_group(self, event):
     ...
 
-@filter_registry.private_filter
+@filter_registry.private_server
 async def handle_private(self, event):
     ...
 ```
@@ -106,21 +106,21 @@ async def handle_private(self, event):
 
 | 过滤器 | 事件类型 | 用途 |
 |--------|----------|------|
-| `@filter_registry.group_filter` | `GroupMessageEvent` | 接收群聊消息 |
-| `@filter_registry.private_filter` | `PrivateMessageEvent` | 接收私聊消息 |
+| `@filter_registry.group_server` | `GroupMessageEvent` | 接收群聊消息 |
+| `@filter_registry.private_server` | `PrivateMessageEvent` | 接收私聊消息 |
 
 ### 支持的过滤条件
 
 | 参数 | 含义 | 示例 |
 |------|------|------|
-| `equals` | 文本完全等于 | `@filter_registry.group_filter(equals="帮助")` |
-| `keyword` | 包含单个关键词 | `@filter_registry.group_filter(keyword="天气")` |
-| `keywords` | 包含任意关键词 | `@filter_registry.group_filter(keywords=["日榜", "周榜"])` |
-| `contains` | 包含指定文本 | `@filter_registry.private_filter(contains="查询")` |
-| `prefix` | 指定前缀 | `@filter_registry.group_filter(prefix="/天气")` |
-| `prefixes` | 任意前缀 | `@filter_registry.group_filter(prefixes=["/", "！"])` |
-| `regex` | 正则匹配 | `@filter_registry.group_filter(regex=r"^天气\s+(.+)$")` |
-| `custom` | 自定义函数 | `@filter_registry.group_filter(custom=is_admin)` |
+| `equals` | 文本完全等于 | `@filter_registry.group_server(equals="帮助")` |
+| `keyword` | 包含单个关键词 | `@filter_registry.group_server(keyword="天气")` |
+| `keywords` | 包含任意关键词 | `@filter_registry.group_server(keywords=["日榜", "周榜"])` |
+| `contains` | 包含指定文本 | `@filter_registry.private_server(contains="查询")` |
+| `prefix` | 指定前缀 | `@filter_registry.group_server(prefix="/天气")` |
+| `prefixes` | 任意前缀 | `@filter_registry.group_server(prefixes=["/", "！"])` |
+| `regex` | 正则匹配 | `@filter_registry.group_server(regex=r"^天气\s+(.+)$")` |
+| `custom` | 自定义函数 | `@filter_registry.group_server(custom=is_admin)` |
 
 多个条件同时写时是“并且”关系，全部满足才会触发。
 
@@ -138,11 +138,11 @@ class MenuPlugin(PluginBase):
         super().__init__()
         self.name = "menu"
 
-    @filter_registry.group_filter(equals="帮助")
+    @filter_registry.group_server(equals="帮助")
     async def group_help(self, event: GroupMessageEvent):
         await self.reply_with_event(event, "群聊帮助菜单")
 
-    @filter_registry.private_filter(equals="帮助")
+    @filter_registry.private_server(equals="帮助")
     async def private_help(self, event: PrivateMessageEvent):
         await self.reply_with_event(event, "私聊帮助菜单")
 ```
@@ -155,15 +155,15 @@ class RankPlugin(PluginBase):
         super().__init__()
         self.name = "rank"
 
-    @filter_registry.group_filter(equals="日榜")
+    @filter_registry.group_server(equals="日榜")
     async def daily_rank(self, event: GroupMessageEvent):
         await self.reply_with_event(event, "这里是日榜")
 
-    @filter_registry.group_filter(equals="周榜")
+    @filter_registry.group_server(equals="周榜")
     async def weekly_rank(self, event: GroupMessageEvent):
         await self.reply_with_event(event, "这里是周榜")
 
-    @filter_registry.group_filter(equals="月榜")
+    @filter_registry.group_server(equals="月榜")
     async def monthly_rank(self, event: GroupMessageEvent):
         await self.reply_with_event(event, "这里是月榜")
 ```
@@ -176,7 +176,7 @@ class WeatherPlugin(PluginBase):
         super().__init__()
         self.name = "weather"
 
-    @filter_registry.group_filter(prefix="天气")
+    @filter_registry.group_server(prefix="天气")
     async def group_weather(self, event: GroupMessageEvent):
         text = event.message.plain_text.strip()
         city = text.removeprefix("天气").strip()
@@ -186,7 +186,7 @@ class WeatherPlugin(PluginBase):
 
         await self.reply_with_event(event, f"正在查询 {city} 的天气")
 
-    @filter_registry.private_filter(regex=r"^天气\s+(.+)$")
+    @filter_registry.private_server(regex=r"^天气\s+(.+)$")
     async def private_weather(self, event: PrivateMessageEvent):
         text = event.message.plain_text.strip()
         city = text.split(maxsplit=1)[1]
@@ -203,7 +203,7 @@ class StatsPlugin(PluginBase):
         super().__init__()
         self.name = "stats"
 
-    @filter_registry.group_filter(keywords=["日榜", "周榜", "月榜"])
+    @filter_registry.group_server(keywords=["日榜", "周榜", "月榜"])
     async def rank(self, event: GroupMessageEvent):
         text = event.message.plain_text.strip()
 
@@ -230,12 +230,12 @@ class EchoPlugin(PluginBase):
         super().__init__()
         self.name = "echo"
 
-    @filter_registry.group_filter(prefix="复读")
+    @filter_registry.group_server(prefix="复读")
     async def group_echo(self, event: GroupMessageEvent):
         text = event.message.plain_text.removeprefix("复读").strip()
         await self.api.send_group_message(event.group_id, text)
 
-    @filter_registry.private_filter(prefix="复读")
+    @filter_registry.private_server(prefix="复读")
     async def private_echo(self, event: PrivateMessageEvent):
         text = event.message.plain_text.removeprefix("复读").strip()
         await self.api.send_private_message(event.user_id, text)
@@ -287,7 +287,7 @@ class MixedMessagePlugin(PluginBase):
         super().__init__()
         self.name = "mixed_message"
 
-    @filter_registry.group_filter(equals="混排")
+    @filter_registry.group_server(equals="混排")
     async def mixed(self, event: GroupMessageEvent):
         await self.api.send_group_message_segments(
             group_id=event.group_id,
@@ -304,7 +304,7 @@ class MixedMessagePlugin(PluginBase):
 接收多格式消息时：
 
 ```python
-@filter_registry.group_filter(keyword="图片")
+@filter_registry.group_server(keyword="图片")
 async def parse_image(self, event: GroupMessageEvent):
     images = []
 
@@ -347,7 +347,7 @@ async def save_data(self):
 
 ## 💡 最佳实践
 
-1. 新插件统一使用 `@filter_registry.group_filter` / `@filter_registry.private_filter`。
+1. 新插件统一使用 `@filter_registry.group_server` / `@filter_registry.private_server`。
 2. 不再把所有逻辑写进 `on_group_message()`。
 3. 一个处理函数只处理一个明确功能。
 4. 命令判断优先使用 `equals`、`prefix`、`keywords`、`regex`。

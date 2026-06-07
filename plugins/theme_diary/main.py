@@ -39,7 +39,7 @@ class ThemeDiaryPlugin(PluginBase):
         self.diary_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"插件 {self.name} 已加载，日记目录: {self.diary_dir}")
 
-    @filter_registry.group_filter
+    @filter_registry.group_server
     async def log_group_message(self, event: GroupMessageEvent):
         await self._write_event(
             source="群聊",
@@ -49,7 +49,7 @@ class ThemeDiaryPlugin(PluginBase):
             group_id=str(event.group_id),
         )
 
-    @filter_registry.private_filter
+    @filter_registry.private_server
     async def log_private_message(self, event: PrivateMessageEvent):
         await self._write_event(
             source="私聊",

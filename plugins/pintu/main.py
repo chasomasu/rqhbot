@@ -59,7 +59,7 @@ class PintuPlugin(PluginBase):
         print(f"{self.name} 插件已加载")
         print(f"插件版本: {self.version}")
 
-    @filter_registry.group_filter()
+    @filter_registry.group_server()
     async def on_group_message(self, event: GroupMessageEvent) -> None:
         """处理群聊消息 — 拼图游戏指令"""
         text = event.message.plain_text.strip()

@@ -101,11 +101,11 @@ def _message_filter_decorator(message_type: str, **filters: Any) -> Callable[[Me
     return decorator
 
 
-def group_message(**filters: Any) -> Callable[[MessageHandler], MessageHandler]:
+def group_server(**filters: Any) -> Callable[[MessageHandler], MessageHandler]:
     return _message_filter_decorator("group", **filters)
 
 
-def private_message(**filters: Any) -> Callable[[MessageHandler], MessageHandler]:
+def private_server(**filters: Any) -> Callable[[MessageHandler], MessageHandler]:
     return _message_filter_decorator("private", **filters)
 
 
@@ -114,14 +114,14 @@ def message_filter(message_type: str, **filters: Any) -> Callable[[MessageHandle
 
 
 class FilterRegistry:
-    def group_filter(self, func: Optional[MessageHandler] = None, **filters: Any) -> Any:
-        decorator = group_message(**filters)
+    def group_server(self, func: Optional[MessageHandler] = None, **filters: Any) -> Any:
+        decorator = group_server(**filters)
         if func is None:
             return decorator
         return decorator(func)
 
-    def private_filter(self, func: Optional[MessageHandler] = None, **filters: Any) -> Any:
-        decorator = private_message(**filters)
+    def private_server(self, func: Optional[MessageHandler] = None, **filters: Any) -> Any:
+        decorator = private_server(**filters)
         if func is None:
             return decorator
         return decorator(func)
@@ -136,7 +136,7 @@ filter_registry = FilterRegistry()
 class PluginBase:
     """插件基类 —— 所有插件必须继承此类
 
-    插件通过 filter_registry.group_filter / filter_registry.private_filter
+    插件通过 filter_registry.group_server / filter_registry.private_server
     声明群聊和私聊消息处理器。插件只依赖 IBotAPI 接口和 EventBus，
     不持有 BotClient 引用。
     """

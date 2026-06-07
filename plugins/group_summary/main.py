@@ -43,7 +43,7 @@ class GroupSummaryPlugin(PluginBase):
         self.report_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"插件 {self.name} 已加载，数据目录: {self.data_dir}")
 
-    @filter_registry.group_filter()
+    @filter_registry.group_server()
     async def handle_group_message(self, event: GroupMessageEvent):
         text = event.message.plain_text.strip()
         if not text:

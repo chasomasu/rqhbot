@@ -154,11 +154,11 @@ class HelloPlugin(PluginBase):
         self.description = "Hello World 插件"
         self.author = "Your Name"
 
-    @filter_registry.group_filter(equals="你好")
+    @filter_registry.group_server(equals="你好")
     async def hello_group(self, event: GroupMessageEvent):
         await self.reply_with_event(event, "你好！我是群聊机器人")
 
-    @filter_registry.private_filter(equals="你好")
+    @filter_registry.private_server(equals="你好")
     async def hello_private(self, event: PrivateMessageEvent):
         await self.reply_with_event(event, "你好！我是私聊机器人")
 ```

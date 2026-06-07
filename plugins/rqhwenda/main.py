@@ -69,7 +69,7 @@ class rqhwenda(PluginBase):
 
     # ==================== 群消息处理（统一入口） ====================
 
-    @filter_registry.group_filter
+    @filter_registry.group_server
     async def _on_group_message(self, event: GroupMessageEvent) -> None:
         """群消息统一路由
 
