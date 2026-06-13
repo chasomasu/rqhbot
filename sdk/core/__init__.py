@@ -5,10 +5,8 @@ RqhBot SDK —— 核心模块
 
 from __future__ import annotations
 
-from .api import BotAPI
 from .client import MessageSegment, NapCatClient
 from .event_bus import EventBus
-from .emoji_map import FACE_NAMES, get_face_name
 from .events import (
     BaseEvent,
     FriendRecallNotice,
@@ -29,7 +27,6 @@ from .events import (
 __all__: list[str] = [
     "MessageSegment",
     "NapCatClient",
-    "BotAPI",
     "EventBus",
     "BaseEvent",
     "Message",
@@ -45,6 +42,4 @@ __all__: list[str] = [
     "RequestEvent",
     "FriendRequestEvent",
     "GroupRequestEvent",
-    "FACE_NAMES",
-    "get_face_name",
 ]

@@ -410,8 +410,8 @@ class NapCatClient(IClient):
             return func
         return decorator
 
-    async def call_api(self, action: str, params: Optional[Dict[str, Any]] = None, 
-                       max_retries: int = 3, retry_delay: float = 1.0) -> Dict[str, Any]:
+    async def call(self, action: str, params: Optional[Dict[str, Any]] = None,
+                   max_retries: int = 3, retry_delay: float = 1.0) -> Dict[str, Any]:
         """
         调用API（支持重试）
         
@@ -502,7 +502,7 @@ class NapCatClient(IClient):
         if image_path:
             segments.append(MessageSegment.image(image_path))
         
-        return await self.call_api("send_private_msg", {
+        return await self.call("send_private_msg", {
             "user_id": user_id,
             "message": segments
         })
@@ -541,7 +541,7 @@ class NapCatClient(IClient):
         if image_path:
             segments.append(MessageSegment.image(image_path))
         
-        return await self.call_api("send_group_msg", {
+        return await self.call("send_group_msg", {
             "group_id": group_id,
             "message": segments
         })
@@ -575,7 +575,7 @@ class NapCatClient(IClient):
         if reply_message_id is not None:
             msg_segments.insert(0, MessageSegment.reply(reply_message_id))
 
-        return await self.call_api("send_group_msg", {
+        return await self.call("send_group_msg", {
             "group_id": group_id,
             "message": msg_segments,
         })
@@ -609,7 +609,7 @@ class NapCatClient(IClient):
         if reply_message_id is not None:
             msg_segments.insert(0, MessageSegment.reply(reply_message_id))
 
-        return await self.call_api("send_private_msg", {
+        return await self.call("send_private_msg", {
             "user_id": user_id,
             "message": msg_segments,
         })
@@ -623,7 +623,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("delete_msg", {
+        return await self.call("delete_msg", {
             "message_id": message_id
         })
     
@@ -637,7 +637,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("group_poke", {
+        return await self.call("group_poke", {
             "group_id": group_id,
             "user_id": user_id
         })
@@ -651,7 +651,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("friend_poke", {
+        return await self.call("friend_poke", {
             "user_id": user_id
         })
     
@@ -664,7 +664,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("send_group_msg", {
+        return await self.call("send_group_msg", {
             "group_id": group_id,
             "message": "[CQ:dice]"
         })
@@ -678,7 +678,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("send_group_msg", {
+        return await self.call("send_group_msg", {
             "group_id": group_id,
             "message": "[CQ:rps]"
         })
@@ -692,7 +692,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("send_private_msg", {
+        return await self.call("send_private_msg", {
             "user_id": user_id,
             "message": "[CQ:dice]"
         })
@@ -706,7 +706,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("send_private_msg", {
+        return await self.call("send_private_msg", {
             "user_id": user_id,
             "message": "[CQ:rps]"
         })
@@ -737,7 +737,7 @@ class NapCatClient(IClient):
         if message_seq is not None:
             params["message_seq"] = message_seq
         
-        return await self.call_api("get_group_msg_history", params)
+        return await self.call("get_group_msg_history", params)
     
     async def get_private_message_history(
         self,
@@ -757,7 +757,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_friend_msg_history", {
+        return await self.call("get_friend_msg_history", {
             "user_id": user_id,
             "message_seq": message_seq,
             "count": count,
@@ -773,7 +773,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_msg", {
+        return await self.call("get_msg", {
             "message_id": message_id
         })
 
@@ -785,7 +785,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_group_list")
+        return await self.call("get_group_list")
 
     async def get_group_member_list(self, group_id: int) -> Dict[str, Any]:
         """获取群成员列表
@@ -796,7 +796,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_group_member_list", {
+        return await self.call("get_group_member_list", {
             "group_id": group_id
         })
 
@@ -810,7 +810,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_group_member_info", {
+        return await self.call("get_group_member_info", {
             "group_id": group_id,
             "user_id": user_id
         })
@@ -826,7 +826,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("set_group_ban", {
+        return await self.call("set_group_ban", {
             "group_id": group_id,
             "user_id": user_id,
             "duration": duration
@@ -843,7 +843,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("set_group_kick", {
+        return await self.call("set_group_kick", {
             "group_id": group_id,
             "user_id": user_id,
             "reject_add_request": reject_add_request
@@ -860,7 +860,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("set_group_card", {
+        return await self.call("set_group_card", {
             "group_id": group_id,
             "user_id": user_id,
             "card": card
@@ -874,7 +874,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_friend_list")
+        return await self.call("get_friend_list")
 
     async def get_login_info(self) -> Dict[str, Any]:
         """获取登录信息
@@ -882,7 +882,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_login_info")
+        return await self.call("get_login_info")
 
     async def get_stranger_info(self, user_id: int) -> Dict[str, Any]:
         """获取陌生人信息
@@ -893,7 +893,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_stranger_info", {
+        return await self.call("get_stranger_info", {
             "user_id": user_id
         })
 
@@ -910,7 +910,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("set_friend_add_request", {
+        return await self.call("set_friend_add_request", {
             "flag": flag,
             "approve": approve,
             "remark": remark
@@ -928,7 +928,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("set_group_add_request", {
+        return await self.call("set_group_add_request", {
             "flag": flag,
             "sub_type": sub_type,
             "approve": approve,
@@ -945,7 +945,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("send_like", {
+        return await self.call("send_like", {
             "user_id": user_id,
             "times": times
         })
@@ -956,7 +956,7 @@ class NapCatClient(IClient):
         Returns:
             API响应数据
         """
-        return await self.call_api("get_version_info")
+        return await self.call("get_version_info")
     
     def get_performance_stats(self) -> Dict[str, Union[int, float, bool]]:
         """获取性能统计信息

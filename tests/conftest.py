@@ -19,7 +19,7 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
 
 @pytest.fixture
 def mock_api() -> MagicMock:
-    """模拟 BotAPI"""
+    """模拟 NapCatClient"""
     api = MagicMock()
     api.send_group_message = AsyncMock(return_value={"status": "ok"})
     api.send_private_message = AsyncMock(return_value={"status": "ok"})

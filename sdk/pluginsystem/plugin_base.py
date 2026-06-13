@@ -19,12 +19,12 @@ from typing import Any, Callable, Coroutine, Dict, List, Optional, TypeAlias, Ty
 
 try:
     from ..config import setup_logging
-    from ..core.interfaces import IBotAPI
+    from ..core.interfaces import IClient
     from ..core.events import GroupMessageEvent, PrivateMessageEvent, NoticeEvent, RequestEvent
     from ..core.event_bus import EventBus
 except ImportError:
     from sdk.config import setup_logging
-    from sdk.core.interfaces import IBotAPI
+    from sdk.core.interfaces import IClient
     from sdk.core.events import GroupMessageEvent, PrivateMessageEvent, NoticeEvent, RequestEvent
     from sdk.core.event_bus import EventBus
 
@@ -137,7 +137,7 @@ class PluginBase:
     """插件基类 —— 所有插件必须继承此类
 
     插件通过 filter_registry.group_server / filter_registry.private_server
-    声明群聊和私聊消息处理器。插件只依赖 IBotAPI 接口和 EventBus，
+    声明群聊和私聊消息处理器。插件只依赖 IClient 接口和 EventBus，
     不持有 BotClient 引用。
     """
 
@@ -147,7 +147,7 @@ class PluginBase:
         self.description: str = ""
         self.author: str = "Unknown"
         self.enabled: bool = True
-        self.api: Optional[IBotAPI] = None
+        self.api: Optional[IClient] = None
         self.event_bus: Optional[EventBus] = None
         self._tasks: List[asyncio.Task[Any]] = []
         self._executor: ThreadPoolExecutor = ThreadPoolExecutor(max_workers=1)
@@ -215,11 +215,11 @@ class PluginBase:
 
     # ==================== 生命周期 ====================
 
-    async def on_load(self, api: IBotAPI, event_bus: EventBus, plugin_dir: Optional[Path] = None) -> None:
+    async def on_load(self, api: IClient, event_bus: EventBus, plugin_dir: Optional[Path] = None) -> None:
         """插件加载时调用
 
         Args:
-            api: IBotAPI 接口实例
+            api: IClient 接口实例
             event_bus: EventBus 实例
             plugin_dir: 插件目录路径
         """
@@ -513,11 +513,11 @@ class PluginBase:
 class PluginManager:
     """插件管理器 —— 负责插件的注册、加载与卸载。
     
-    只依赖 IBotAPI 和 EventBus，不持有 BotClient 引用。
+    只依赖 IClient 和 EventBus，不持有 BotClient 引用。
     """
 
-    def __init__(self, api: IBotAPI, event_bus: EventBus) -> None:
-        self.api: IBotAPI = api
+    def __init__(self, api: IClient, event_bus: EventBus) -> None:
+        self.api: IClient = api
         self.event_bus: EventBus = event_bus
         self.plugins: Dict[str, PluginBase] = {}
         self._loaded_plugins: List[str] = []

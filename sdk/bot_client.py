@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Set, TypeAlias
 
 from sdk.config import setup_logging
-from sdk.core import BotAPI, NapCatClient
+from sdk.core import NapCatClient
 from sdk.core.event_bus import EventBus
 from sdk.core.events import (
     BaseEvent,
@@ -44,7 +44,7 @@ class BotClient:
         plugins_dir: str = "plugins",
     ) -> None:
         self.client: NapCatClient = NapCatClient(ws_url=ws_url, access_token=access_token)
-        self.api: BotAPI = BotAPI(self.client)
+        self.api = self.client
         self.event_bus: EventBus = EventBus()
         self._plugins_dir: str = plugins_dir
 

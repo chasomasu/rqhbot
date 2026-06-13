@@ -9,7 +9,6 @@ from .bot_client import BotClient
 from .config import Config, setup_logging
 from .core import (
     BaseEvent,
-    BotAPI,
     EventBus,
     FriendRecallNotice,
     FriendRequestEvent,
@@ -40,7 +39,6 @@ __version__: str = "3.5.0"
 
 __all__: list[str] = [
     "NapCatClient",
-    "BotAPI",
     "EventBus",
     "BaseEvent",
     "Message",

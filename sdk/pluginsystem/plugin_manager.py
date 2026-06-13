@@ -27,7 +27,7 @@ class HotReloadPluginManager:
     """热重载插件管理器
 
     管理所有插件的模块导入、实例生命周期和热重载。
-    不持有 BotClient 引用，只依赖 IBotAPI 和 EventBus。
+    不持有 BotClient 引用，只依赖 IClient 和 EventBus。
 
     Attributes:
         plugin_dir: 插件根目录
@@ -140,7 +140,7 @@ class HotReloadPluginManager:
 
         Args:
             plugin_name: 插件名称（对应 plugins/<plugin_name>/ 目录）
-            api:         IBotAPI 实例
+            api:         IClient 实例
             event_bus:   EventBus 实例
 
         Returns:
@@ -261,7 +261,7 @@ class HotReloadPluginManager:
 
         Args:
             plugin_name: 插件名称
-            api:         IBotAPI 实例
+            api:         IClient 实例
             event_bus:   EventBus 实例
 
         Returns:
@@ -284,7 +284,7 @@ class HotReloadPluginManager:
         依次调用 load_plugin() 进行加载。
 
         Args:
-            api:        IBotAPI 实例
+            api:        IClient 实例
             event_bus:  EventBus 实例
 
         Returns:
