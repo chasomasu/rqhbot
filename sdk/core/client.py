@@ -3,8 +3,6 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-import platform
-import re
 import time
 import uuid
 from pathlib import Path
@@ -103,45 +101,13 @@ class NapCatClient(IClient):
     PING_TIMEOUT: Final[float] = 10.0
     CLOSE_TIMEOUT: Final[float] = 5.0
 
-    @staticmethod
-    def _normalize_ws_url(ws_url: str) -> str:
-        """规范化 WebSocket URL，解决 Windows 上 localhost 的 IPv4/IPv6 问题。
-        
-        Windows 上 localhost 会优先解析为 IPv6 (::1)，但 NapCat 通常只监听
-        IPv4 (127.0.0.1)，导致连接失败。此方法在 Windows 系统上自动将 
-        localhost 替换为 127.0.0.1。
-        
-        Args:
-            ws_url: 原始 WebSocket URL
-            
-        Returns:
-            规范化后的 WebSocket URL
-        """
-        if platform.system() == "Windows":
-            # 匹配 ws://localhost 或 wss://localhost（不区分大小写）
-            normalized = re.sub(
-                r"(wss?://)localhost(?=[:\/]|$)",
-                r"\g<1>127.0.0.1",
-                ws_url,
-                flags=re.IGNORECASE,
-            )
-            if normalized != ws_url:
-                logger.info(
-                    "[IPv4修正] Windows 系统检测到 localhost，"
-                    "已自动替换为 127.0.0.1 避免 IPv6 解析问题"
-                )
-                logger.info(f"  原始地址: {ws_url}")
-                logger.info(f"  修正地址: {normalized}")
-            return normalized
-        return ws_url
-
     def __init__(
         self,
         ws_url: Optional[str] = None,
         access_token: Optional[str] = None,
     ) -> None:
         raw_url: str = ws_url or Config.NAPCAT_WS_URL
-        self.ws_url: str = self._normalize_ws_url(raw_url)
+        self.ws_url: str = raw_url
         self.access_token: str = access_token or Config.NAPCAT_ACCESS_TOKEN
         self.ws: Optional[websockets.WebSocketClientProtocol] = None
         self.message_handlers: Dict[str, List[EventHandler]] = {}
