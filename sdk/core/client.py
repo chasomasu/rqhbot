@@ -657,58 +657,58 @@ class NapCatClient(IClient):
     
     async def send_group_dice(self, group_id: int) -> Dict[str, Any]:
         """发送群骰子消息
-        
+
         Args:
             group_id: 群号
-            
+
         Returns:
             API响应数据
         """
         return await self.call("send_group_msg", {
             "group_id": group_id,
-            "message": "[CQ:dice]"
+            "message": [MessageSegment.dice()]
         })
-    
+
     async def send_group_rps(self, group_id: int) -> Dict[str, Any]:
         """发送群猜拳消息
-        
+
         Args:
             group_id: 群号
-            
+
         Returns:
             API响应数据
         """
         return await self.call("send_group_msg", {
             "group_id": group_id,
-            "message": "[CQ:rps]"
+            "message": [MessageSegment.rps()]
         })
-    
+
     async def send_private_dice(self, user_id: int) -> Dict[str, Any]:
         """发送私聊骰子消息
-        
+
         Args:
             user_id: 用户ID
-            
+
         Returns:
             API响应数据
         """
         return await self.call("send_private_msg", {
             "user_id": user_id,
-            "message": "[CQ:dice]"
+            "message": [MessageSegment.dice()]
         })
-    
+
     async def send_private_rps(self, user_id: int) -> Dict[str, Any]:
         """发送私聊猜拳消息
-        
+
         Args:
             user_id: 用户ID
-            
+
         Returns:
             API响应数据
         """
         return await self.call("send_private_msg", {
             "user_id": user_id,
-            "message": "[CQ:rps]"
+            "message": [MessageSegment.rps()]
         })
     
     async def get_group_message_history(
