@@ -248,6 +248,18 @@ class BotClient:
             plugin_name, self.api, self.event_bus
         )
 
+    def start_file_watcher(self) -> bool:
+        """启动文件监控，实现自动热重载
+
+        Returns:
+            是否成功启动
+        """
+        return self.hot_reload_manager.start_file_watcher()
+
+    def stop_file_watcher(self) -> None:
+        """停止文件监控"""
+        self.hot_reload_manager.stop_file_watcher()
+
     # ======================== 生命周期 ========================
 
     async def run_frontend(
